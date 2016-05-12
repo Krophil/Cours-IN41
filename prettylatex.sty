@@ -1,0 +1,71 @@
+\ProvidesPackage{prettylatex}[2016/03/06]
+\usepackage{titletoc}
+
+\DeclareOption{course}{
+    \titlecontents*{chapter}% <section-type>
+        [0pt]% <left>
+        {\addvspace{1em}}% <above-code>
+        {\bfseries\chaptername\ \thecontentslabel\quad}% <numbered-entry-format>
+        {}% <numberless-entry-format>
+        {\bfseries\hfill\contentspage}% <filler-page-format>
+}
+
+\ExecuteOptions{course}
+
+\ProcessOptions\relax % end of the options
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+\usepackage{changepage}
+\usepackage[russian, frenchb]{babel} % adopte les règles de typographie française
+\usepackage{libertine}
+\usepackage{amsmath}
+\usepackage{wrapfig}
+\usepackage{multicol}
+\usepackage{mathtools}
+
+\newcommand{\dirac}{
+    \textcyrillic{\CYRSH}
+}
+
+\setlength{\columnsep}{1cm}
+
+\setlength{\parskip}{1em} % vertical space between paragraphs
+\setlength{\baselineskip}{0em} % vertical space between line in a paragraph
+
+\renewcommand{\baselinestretch}{1.2}
+\renewcommand{\familydefault}{\sfdefault}
+\renewcommand{\Frlabelitemi}{$\bullet$}
+\renewcommand{\Frlabelitemii}{$\circ$}
+\renewcommand{\Frlabelitemiii}{--}
+
+\renewcommand{\contentsname}{Table des matières} % new name for tableofcontents
+\renewcommand{\listfigurename}{Table des illustrations} % new name for \listoffigures
+\renewcommand{\listtablename}{Liste des tableaux} % new name for \listoftables
+
+\newcommand{\neverindent}{
+    \setlength{\parindent}{0pt} % indentation of the first line of a paragraph
+}
+
+\newcommand{\autoindent}{
+    \setlength{\parindent}{\pardefault}
+}
+
+\newcommand{\TF}[1]{
+    \mathrm{TF} \{ #1 \}
+}
+
+\newcommand{\TL}[1]{
+    \mathrm{TL} \{ #1 \}
+}
+
+\newcommand{\sinc}{
+    \mathrm{sinc}
+}
+
+\renewcommand{\d}[1]{
+    \mathrm{d}#1
+}
+
+\endinput
