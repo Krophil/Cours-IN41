@@ -1,0 +1,92 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{prettylatex}
+\usepackage{titlepage}
+\usepackage{boiboites}
+\usepackage{pgfplots}
+
+\top{Université de Technologie de Belfort-Montbéliard}{}
+\title{Cours d'IN41}{Chapitre 7 -- Signaux et systèmes discrets}
+\author{}
+\date{Semestre de printemps 2016}
+
+\newboxedtheorem[boxcolor=orange, background={rgb:white,20;green,2;black,1}, titlebackground={rgb:white,15;green,5;black,3},
+titleboxcolor = black]{defi}{Définition}{cmpDefi}
+
+\begin{document}
+
+\maketitlepage
+
+\tableofcontents
+\pagebreak
+
+\section{Signaux discrets}
+
+$\chi$ : séquence de nombres dans laquelle le $n^{eme}$ nombre est $x(n)$ \\
+Notation : $\chi = \{ x(n) \}$ avec $-\infty < n < +\infty$
+
+\subsection{Signaux classiques}
+
+\subsubsection{Impulsion unité}
+
+\[ \delta(n) = \begin{cases}
+    1 & \text{ si } n = 0 \\
+    0 & \text{ sinon}
+\end{cases} \]
+
+\subsubsection{Saut unité}
+
+\[ \Gamma(n) = \begin{cases}
+    1 & \text{ si } n >= 0 \\
+    0 & \text{ sinon}
+\end{cases} = \sum_{k=0}^{+\infty} \delta(n-k) \]
+\[ \delta(n) = \Gamma(n) - \Gamma(n-1) \]
+
+\subsubsection{Exponentielle numérique}
+
+\[ x(n) = R^n \Gamma(n) \]
+
+Si $-1 < R < 1 \implies$ exponentielle décroissante \\
+Si $|R| > 1 \implies$ exponentielle croissante
+
+\subsubsection{Sinusoïde}
+
+\[ x(n) = \cos(n\omega_0 + e) \text{ et } \omega_0 = 2\pi f_0 t_e \]
+
+\subsubsection{Phaseur de pulsations $\omega_0$}
+
+\[ x(n) = e^{in\omega_0} \]
+
+\subsection{Propriétés des signaux discrets}
+
+Énergie totale : $E(\infty) = \sum_{-\infty}^{+\infty} ||x(n)||^2$ \\
+Puissance moyenne : $P_n = \lim_{N \to +\infty} \frac{1}{N} \sum_{-N/2}^{N/2} |x(n)|^2$
+$P$-périodique : $x(n) = x(n+P) \forall n$
+
+\section{Systèmes numériques}
+
+{\Large Schéma 7}
+
+Notation : $y(n) = \T{x(n)}$
+
+Classification :
+
+\begin{itemize}
+    \item statique : $y(n)$ ne dépend que de $x(n)$ au même instant ;
+    \item dynamique : $y(n)$ est une fonction de $x(n)$ aux instants antérieurs ou égaux à $n$ et/ou des échantillons de sortie.
+\end{itemize}
+
+Exemple :
+\[ y(n) = b_0 x(n) + b_1 x(n-1) + a_1 y(n-1) + a_2 y(n-2) \]
+
+Schéma fonctionnel ou diagramme fontionnel : illustration graphique des opérations effectuées sur le signal d'entrée ainsi que les connexions les reliant (addition, multiplication, décalage avant et arrière)
+
+\[ y(n) = \frac{1}{2} ((x_1(n) + x_1(n-1))x_2(n)) - \frac{1}{4} y(n-1) \]
+
+{\Large Illustration 8}
+
+Interconnexion des systèmes :
+
+En cascade : $x_1(n)$
+
+\end{document}

@@ -1,0 +1,205 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{prettylatex}
+\usepackage{titlepage}
+\usepackage{boiboites}
+\usepackage{pgfplots}
+
+\top{Université de Technologie de Belfort-Montbéliard}{}
+\title{Cours d'IN41}{Chapitre 5 -- Systèmes de traitement de signal}
+\author{}
+\date{Semestre de printemps 2016}
+
+\newboxedtheorem[boxcolor=orange, background={rgb:white,20;green,2;black,1}, titlebackground={rgb:white,15;green,5;black,3},
+titleboxcolor = black]{defi}{Définition}{cmpDefi}
+
+\begin{document}
+
+\maketitlepage
+
+\tableofcontents
+\pagebreak
+
+\section{Transformée de Laplace (TL)}
+
+\begin{defi}[Transformée de Laplace (TL)]
+    La tranformée de Laplace d'un signal $x(t)$ est donnée par :
+    \[ \TL{x(t)} = X(p) = \int_0^{+\infty} x(t) e^{-pt} \d t \]
+    \[ \text{avec } p=i2\pi f \text{ la fréquence complexe} \]
+\end{defi}
+
+\subsection{Propriétés de la transformée de Laplace}
+
+$x(t) \xrightarrow{\mathrm{TL}} X(p)$
+
+\textbf{Linéarité :} $ax(t) + by(t) \xrightarrow{\mathrm{TL}} aX(p) + bY(p)$
+
+\textbf{Homothétie :} $x(at) \xrightarrow{\mathrm{TL}} \dfrac{1}{|a|} X(\frac{p}{a})$ avec $a \in \mathbb{R}$
+
+\textbf{Translation :} $x(t-a) \xrightarrow{\mathrm{TL}} X(p) e^{-ap}$ avec $a \in \mathbb{R}$
+
+\textbf{Dérivation :} \\
+$\frac{\d x(t)}{\d t} \xrightarrow{\mathrm{TL}} pX(p) - x(0)$ \\
+$\frac{\d^2 x(t)}{\d t^2} \xrightarrow{\mathrm{TL}} p^2X(p) - px(0) - x'(0)$ \\
+$\vdots$ \\
+$\frac{\d^n x(t)}{\d t^n} \xrightarrow{\mathrm{TL}} p^nX(p) - p^{n-1}x(0) - \dots - p^0 x^{(n-1)}(0)$
+
+\textbf{Intégration :} $\int_0^t x(\tau) \d \tau \xrightarrow{\mathrm{TL}} \dfrac{1}{p} X(p)$
+
+\begin{defi}[Théorème de Borel]
+    \[ x(t) \otimes y(t) \xrightarrow{\mathrm{TL}} X(p) Y(p) \]
+    \[ x(t) y(t) \xrightarrow{\mathrm{TL}} X(p) \otimes Y(p) \]
+\end{defi}
+
+\subsection{Signaux classiques}
+
+Impulsion de Dirac : $\delta (t) \xrightarrow{\mathrm{TL}} 1$
+
+Délai idéal : $\delta (t - \tau) \xrightarrow{\mathrm{TL}} e^{-\tau p}$
+
+Puissance $n$-ième : $\frac{t^n}{n!} \Gamma(t) \xrightarrow{\mathrm{TL}} \frac{1}{p^{n+1}}$
+
+Échelon : $\Gamma(t) \xrightarrow{\mathrm{TL}} \frac{1}{p}$
+
+Échelon retardé : $\Gamma(t-\tau) \xrightarrow{\mathrm{TL}} \frac{1}{p}e^{-\tau p}$
+
+Rampe : $t\Gamma(t) \xrightarrow{\mathrm{TL}} \frac{1}{p^2}$
+
+Décroissance exponentielle : $e^{-\alpha t} \Gamma(t) \xrightarrow{\mathrm{TL}} \frac{1}{p+\alpha}$
+
+Approche exponentielle : $(1 - e^{-\alpha t}) \Gamma(t) \xrightarrow{\mathrm{TL}} \frac{\alpha}{p(p + \alpha)}$
+
+Sinus : $\sin(\omega t) \Gamma(t) \xrightarrow{\mathrm{TL}} \frac{\omega}{p^2 + \omega^2}$
+
+Cosinus : $\cos(\omega t) \Gamma(t) \xrightarrow{\mathrm{TL}} \frac{p}{p^2 + \omega^2}$
+
+Décroissance exponentielle d'un sinus : $e^{-\alpha t} \sin(\omega t) \Gamma(t) \xrightarrow{\mathrm{TL}} \frac{\omega}{(p + \alpha)^2 + \omega^2}$
+
+Décroissance exponentielle d'un cosinus : $e^{-\alpha t} \cos(\omega t) \Gamma(t) \xrightarrow{\mathrm{TL}} \frac{p + \alpha}{(p + \alpha)^2 + \omega^2}$
+
+Pour le TD : $\frac{(t-\tau)^n}{n!} e^{-\alpha (t-\tau)} \Gamma(t-\tau) \xrightarrow{\mathrm{TL}} \frac{e^{-\tau p}}{(p+\alpha)^{n+1}}$
+
+\begin{defi}[Transformée de Laplace d'une fonction $T_0$ périodique]
+    \[ x(t) \xrightarrow{\mathrm{TL}} X(p) = \dfrac{1}{1-e^{-pT_0}} \int_0^{T_0} e^{-pt} x(t) \d t \]
+\end{defi}
+
+\begin{defi}[Théorème de la valeur initiale et de la valeur finale]
+    \[ x(0) = \lim_{p \to +\infty} pX(p)\]
+    \[ \lim_{t \to +\infty} x(t) = \lim_{p \to 0} pX(p) \]
+\end{defi}
+
+\section{Systèmes linéaires invariants dans le temps (SLIT)}
+
+\begin{defi}[Systèmes linéaires invariants dans le temps]
+    \paragraph{Système :} Structure physique recevant un signal d'entrée $x(t)$ et délivre un signal de sortie $y(t)$. \\
+    Si $x(t)$ et $y(t)$ sont analogiques, le système est dit analogique.
+
+    \[ \begin{rcases}
+        \xrightarrow{x_1(t)} \mathrm{SLIT} \xrightarrow{y_1(t)} \\
+        \xrightarrow{x_2(t)} \mathrm{SLIT} \xrightarrow{y_2(t)}
+    \end{rcases} \implies \xrightarrow{ax_1(t) + bx_2(t)} \mathrm{SLIT} \xrightarrow{ay_1(t) + by_2(t)}\]
+
+    \paragraph{Système invariant dans le temps :} Système dont les caractéristiques de comportement ne se modifient pas dans le temps.
+
+    \[ \xrightarrow{e(t)} \mathrm{SLIT} \xrightarrow{s(t)} \implies \xrightarrow{e(t-\tau)} \mathrm{SLIT} \xrightarrow{s(t-\tau)} \]
+\end{defi}
+
+\subsection{Analyse des systèmes invariants dans le temps}
+
+\textbf{Analyse temporelle :} \\
+Observation du comportement en fonction du temps \\
+$\implies$ utilisation de fonctions d'excitation (étude de régime transitoire)
+
+\textbf{Analyse fréquentielle :} \\
+Observation du comportement en fonction de la variation de la fréquence \\
+$\implies$ connaître la réponse du système à une excitation sinusoïdale à différentes fréquences
+
+\subsubsection{Réponse impulsionnelle $h(t)$}
+
+\[ \xrightarrow{\delta(t)} \mathrm{SLIT} \xrightarrow{h(t)} \]
+
+But : apprécier la stabilité du système
+
+Un système linéaire d'entrée $e(t)$ et de réponse impulsionnelle $h(t)$ a pour sortie $s(t)$ tel que :
+\[ s(t) = e(t) \otimes h(t) = \int_{-\infty}^{+\infty} e(\nu) h(t - \nu) \d \nu\]
+\[ \implies s(t) = \mathrm{TL}^{-1} \{ H(p) \} \]
+
+\subsubsection{Réponse indicielle $d_i(t)$}
+
+\[ \xrightarrow{\Gamma(t)} \mathrm{SLIT} \xrightarrow{d_i(t)} \]
+
+But : observer l'évolution vers un régime permanent de la sortie suite à une discontinuité du signal d'entrée
+
+\[ d_i(t) = \int_0^t h(\nu) \d \nu \]
+\[ \implies s(t) = \mathrm{TL}^{-1} \{ \frac{1}{p} H(p) \} \]
+
+\subsubsection{Réponse à une rampe $r(t)$}
+
+\[ \xrightarrow{r(t)} \mathrm{SLIT} \xrightarrow{R(t)} \]
+
+But : utilisé à l'entrée des systèmes qui ne peuvent pas subir de varations trop brusques
+
+\[ r(t) = at^2 \xrightarrow{\mathrm{TL}} \dfrac{a}{p^2} \]
+
+\textbf{Lien avec la réponse impulsionnelle :}
+\[ \dfrac{\d^2 r(t)}{\d t^2} = h(t) \]
+
+\textbf{Lien avec la réponse indicielle :}
+\[ r(t) = \int_0^t d_i(\tau) \d \tau \]
+
+\subsubsection{Réponse fréquentielle}
+
+\[ \xrightarrow{x(t)} \mathrm{SLIT} \xrightarrow{y(t)} \]
+
+Réponse à une entrée sinusoïdale
+
+$H(j\omega)$ : transmittance isochrone ou FT
+
+\subsubsection{Fonction de transfert}
+
+C'est la tranformée de Laplace de la réponse impulsionnelle :
+$H(p) = \dfrac{Y(p)}{X(p)}$ avec $Y(p) = \TL{y(t)}$ et $X(p) = \TL{x(t)}$
+
+On a $p = i2\pi f = i\omega$ \\
+$H(p) = H(i\omega)$
+
+\textbf{Détermination isochrone de la FT équivalente :} \\
+
+En série :
+{\Large schéma 6}
+
+En paralèle :
+{\Large schéma 7}
+
+Lien avec la réponse indicielle $d_i(t)$ :
+\[ d_i(t) = \mathrm{TL}^{-1}\{ \frac{H(p)}{p} \} \]
+
+\subsubsection{Diagramme de Bode}
+
+Moyen de représenter le comportement fréquentiel d'un système
+
+Deux tracés :
+
+\begin{itemize}
+    \item Gain en décibel (dB) : $G_{dB} = 20 \log (|| H(j\omega) ||)$
+    \item Phase en degré : $arg(H(j\omega))$
+\end{itemize}
+
+L'échelle de pulsations est logarithmique et est exprimée en $rad/s$.
+
+{\Large schéma 8}
+
+\subsection{Stabilité des systèmes}
+
+Un système est stable au sens EBSB (Entrée Bornée Sortie Bornée) si tout signal d'entrée borné produit un signal de sortie borné c'est-à-dire que la réponse impulsionnelle est absolument intégrable.
+\[ \int_{-\infty}^{+\infty} ||h(t)|| \d t = ||h||_1 < +\infty \]
+
+\textbf{Lien avec la réponse impulsionnelle $h(t)$ :}
+
+\begin{itemize}
+    \item si $h(t) \to 0$, le système est asymptotiquement stable
+    \item si $h(t)$ est borné sans tendre vers $0$, le système est stable
+    \item si $h(t)$ diverge, le système est instable
+\end{itemize}
+
+\end{document}

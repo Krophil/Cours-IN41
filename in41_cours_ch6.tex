@@ -1,0 +1,153 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{prettylatex}
+\usepackage{titlepage}
+\usepackage{boiboites}
+\usepackage{pgfplots}
+
+\top{Université de Technologie de Belfort-Montbéliard}{}
+\title{Cours d'IN41}{Chapitre 6 -- Filtrage analogique}
+\author{}
+\date{Semestre de printemps 2016}
+
+\newboxedtheorem[boxcolor=orange, background={rgb:white,20;green,2;black,1}, titlebackground={rgb:white,15;green,5;black,3},
+titleboxcolor = black]{defi}{Définition}{cmpDefi}
+
+\begin{document}
+
+\maketitlepage
+
+\tableofcontents
+\pagebreak
+
+\section{Filtres idéaux}
+
+\subsection{Filtre passe bas}
+
+Laisse passer uniquement les fréquences $f < f_c$, avec $f_c$ la fréquence de coupure.
+
+\[ \text{Gain : } \begin{cases}
+    1 & \forall f < f_c \\
+    0 & \text{ sinon}
+\end{cases} \]
+
+{\Large Graphique 1}
+
+\subsection{Filtre passe haut}
+
+Laisse passer uniquement les fréquences $f >= f_p$ avec $f_p$ la fréquence passante.
+
+\[ \text{Gain : } \begin{cases}
+    1 & \forall f >= f_c \\
+    0 & \text{ sinon}
+\end{cases} \]
+
+{\Large Graphique 2}
+
+\subsection{Filtre passe bande}
+
+Laisse passer les fréquences $f \in [ f_p , f_c [$.
+
+{\Large Graphique 3}
+
+\subsection{Filtre coupe bande}
+
+Coupe une plage de fréquence $f \in [ f_c , f_p [$.
+
+{\Large Graphique 4}
+
+\section{Filtres réels}
+
+Un filtre est défini par sa réponse impulsionnelle.
+
+\[ s(t) = e(t) \otimes h(t) \text{ avec } \begin{cases}
+    \TF{h(t)} = H(f) \\
+    \TL{h(t)} = H(p)
+\end{cases} \]
+\[ s(t) = \int_{-\infty}^{\infty} e(\nu) h(t-\nu) \d \nu \]
+
+{\Large Graphique 5}
+
+\[ S(f) = H(f) E(f) \]
+
+Si l'entrée est un signal causal ($x(t) = 0 \forall t < 0$) alors $s(t) = \int_0^t e(\nu) h(t-\nu) \d \nu$ (car la réponse impulsionnelle est causale) $\implies$ la fonction de transfert est obligatoirement complexe.
+
+\[ H(f) = ||H(f)|| e^{i \times \textrm{arg}(H(f))} \]
+\[ S(f) = E(f) H(f) = E(f) ||H(f)|| e^{i \times \textrm{arg}(H(f))} \]
+
+Cas d'un filtre passe-bas idéal :
+\[ H(f) = \textrm{RECT}(f) \]
+\[ h(t) = \int_{-\infty}^{+\infty} H(f) e^{i2\pi ft} \d f \]
+\[ = \int_{-f_c}^{f_c} e^{i2\pi ft} \d f = [ \frac{e^{i2\pi ft}}{i2\pi t} ]_{-f_c}^{f_c} \]
+\[ = \frac{e^{i2\pi f_ct} - e^{-i2\pi f_ct}}{i2\pi t} = \frac{\sin(2\pi f_c t)}{2\pi f_c t} 2f_c = 2f_c \sinc(2\pi f_c t) \]
+
+$h(t)$ obtenue n'est pas causale $\implies$ on obtient un filtre.
+Le passe bas idéal n'est pas réalisable.
+
+Les filtres réels présentent des imperfections en fonction de leurs applications \\
+$\rightarrow$ transition progressive entre la bande passante et la bande coupée \\
+$\rightarrow$ irrégularité du gain dans la bande passante (ondulation) \\
+$\rightarrow$ irrégularité du gain dans la bande coupée (ondulation) \\
+$\rightarrow$ irrégularité du temps de propagation
+
+\subsection{Filtre passe bas}
+
+Bande passante : $\omega_p = \omega_p - 0$ \\
+Bande de transition : $\omega_a - \omega_p$ \\
+Bande coupée : $+\infty - \omega_a$ \\
+Sélectivité : $s = \frac{\omega_p}{\omega_a}$
+
+\subsection{Filtre passe haut}
+
+Bande passante : $+\infty - \omega_p$ \\
+Bande de transition : $\omega_p - \omega_a$ \\
+Bande coupée : $\omega_a = \omega_a - 0$ \\
+Sélectivité : $s = \frac{\omega_a}{\omega_p}$
+
+\subsection{Filtre passe-bande}
+
+Bande passante : $\omega_{2p} - \omega_{1p}$ \\
+Bandes de transition : $\omega_{2a} - \omega_{2p}$ et $\omega_{1p} - \omega_{1a}$ \\
+Bandes atténuées : $+\infty - \omega_{2a}$ et $\omega_{1a} - 0$ \\
+Pulsation centrale : $\omega_0 = \sqrt{\omega_{2p} - \omega_{1p}}$ \\
+Sélectivité : $s = \frac{\omega_{2p} - \omega_{1p}}{\omega_{2a} = \omega_{1a}}$
+
+\subsection{Filtre coupe bande}
+
+Bandes passante : $+\infty - \omega_{2p}$ et $\omega_{1p} - 0$ \\
+Bandes de transition : $\omega_{2p} - \omega_{2a}$ et $\omega_{1a} - \omega_{1p}$ \\
+Bande coupée : $\omega_{2a} - \omega_{1a}$ \\
+Sélectivité : $s = \frac{\omega_{2a} - \omega_{1a}}{\omega_{2p} = \omega_{1p}}$
+
+\subsection{Filtre de Butterworth}
+
+Défini par la fonction de transfert
+
+\[ H(f)^2 = \frac{1}{1+(\frac{f}{f_c})^{2n}} \text{ avec } \begin{cases}
+    n & \text{ : ordre du filtre} \\
+    f_c & \text{ : fréquence de coupure}
+\end{cases} \]
+
+Propriétés :
+
+\begin{itemize}
+    \item Réponse plate dans la bande passante et dans la bande coupée \\
+    $\forall n \in \mathbb{N}^* ||H(f_c)||^2 = 1/2 \implies G(f_c) = 20 \mathrm{log}(||H(f_c)||) = 3 \mathrm{dB}$
+    \item Atténuation asymptotique de $-20n \mathrm{dB}$ / décade
+    \item L'ordre du filtre et de la fonction de transfert est déterminé à patir du gabarit
+\end{itemize}
+
+Table de Butterworth :
+
+\begin{tabular}{|l|l|}
+    \hline
+    $n$ & Polynôme $P_n(p)$ \\
+    \hline
+    $1$ & $p+1$ \\
+    $2$ & $p^2 + \sqrt{2}p + 1$ \\
+    $3$ & $(p+1)(p^2 + p + 1)$ \\
+    $4$ & $(p^2 + 0.765p + 1)(p^2 + 1.84p + 1)$ \\
+    \hline
+\end{tabular}
+
+\end{document}
